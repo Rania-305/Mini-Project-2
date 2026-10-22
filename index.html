@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Club Event Task &amp; Budget Delegator</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Club Event Task &amp; Budget Delegator</h1>
+    <button id="reset-btn" class="btn btn-danger" type="button">Reset All Data</button>
+  </header>
+
+  <main>
+    <section id="totals-bar" class="totals-bar" aria-label="Semester totals">
+      <div class="totals-item">
+        <span class="totals-label">SGA Spent</span>
+        <span id="totals-sga" class="totals-value">$0</span>
+      </div>
+      <div class="totals-item">
+        <span class="totals-label">OBI Spent</span>
+        <span id="totals-obi" class="totals-value">$0</span>
+      </div>
+      <div class="totals-item totals-combined">
+        <span class="totals-label">Combined Total</span>
+        <span id="totals-combined" class="totals-value">$0</span>
+      </div>
+    </section>
+
+    <section class="add-event-section">
+      <h2>Add Event</h2>
+      <form id="add-event-form" class="inline-form" novalidate>
+        <div class="field">
+          <label for="event-name">Event name</label>
+          <input id="event-name" name="event-name" type="text" placeholder="e.g. Spring Gala" required />
+        </div>
+        <div class="field">
+          <label for="event-status">Status</label>
+          <select id="event-status" name="event-status">
+            <option value="Planning">Planning</option>
+            <option value="Active">Active</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Event</button>
+      </form>
+      <p id="add-event-error" class="error-message" role="alert" hidden></p>
+    </section>
+
+    <section class="event-list-section">
+      <h2>Events</h2>
+      <div id="event-list" class="event-list"></div>
+      <p id="empty-state" class="empty-state" hidden>No events yet — add one above.</p>
+    </section>
+  </main>
+
+  <template id="event-card-template">
+    <article class="event-card" data-event-id="">
+      <div class="event-card-header">
+        <div class="event-card-title">
+          <h3 class="event-name"></h3>
+          <span class="event-status-badge"></span>
+        </div>
+        <button type="button" class="btn btn-secondary toggle-btn">Expand</button>
+      </div>
+
+      <div class="progress-row">
+        <div class="progress-bar">
+          <div class="progress-bar-fill"></div>
+        </div>
+        <span class="progress-fraction"></span>
+      </div>
+
+      <div class="spend-row">
+        <span class="spend-item">SGA: <span class="spend-sga"></span></span>
+        <span class="spend-item">OBI: <span class="spend-obi"></span></span>
+        <span class="spend-item spend-total">Total: <span class="spend-event-total"></span></span>
+      </div>
+
+      <div class="event-detail" hidden>
+        <div class="task-section">
+          <h4>Tasks</h4>
+          <ul class="task-list"></ul>
+
+          <form class="add-task-form inline-form" novalidate>
+            <div class="field">
+              <label>Task name</label>
+              <input type="text" class="task-name-input" placeholder="Task name" required />
+            </div>
+            <div class="field">
+              <label>Owner</label>
+              <input type="text" class="task-owner-input" placeholder="Owner" />
+            </div>
+            <div class="field">
+              <label>Deadline</label>
+              <input type="date" class="task-deadline-input" />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Task</button>
+          </form>
+          <p class="task-error error-message" role="alert" hidden></p>
+        </div>
+
+        <div class="budget-section">
+          <h4>Log Budget</h4>
+          <form class="add-budget-form inline-form" novalidate>
+            <div class="field">
+              <label>Amount ($)</label>
+              <input type="number" class="budget-amount-input" min="0" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="field">
+              <label>Source</label>
+              <select class="budget-source-input">
+                <option value="SGA">SGA</option>
+                <option value="OBI">OBI</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Log Budget</button>
+          </form>
+          <p class="budget-error error-message" role="alert" hidden></p>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <template id="task-row-template">
+    <li class="task-row" data-task-id="">
+      <input type="checkbox" class="task-done-checkbox" />
+      <div class="task-info">
+        <span class="task-name"></span>
+        <span class="task-meta"></span>
+      </div>
+      <button type="button" class="btn btn-icon delete-task-btn" aria-label="Delete task">&times;</button>
+    </li>
+  </template>
+
+  <script src="js/storage.js"></script>
+  <script src="js/calculations.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
