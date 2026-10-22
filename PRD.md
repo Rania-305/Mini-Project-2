@@ -14,7 +14,7 @@ Give a campus club leader a single page where adding, completing, or deleting a 
 One page, no routing. Sections, top to bottom:
 
 1. **Semester totals bar** — read-only summary: total spent from SGA, total spent from OBI, combined total. Recalculated from all events' logged spend.
-2. **Add Event form** — fields: event name (text, required), status (dropdown: Planning / Active / Done). Submitting adds a new event card with 0 tasks and $0 spent.
+2. **Add Event form** — fields: event name (text, required), status (dropdown: Planning / Active / Incomplete / Done). Submitting adds a new event card with 0 tasks and $0 spent.
 3. **Event list** — one card per event, each showing:
    - Name and status
    - Progress bar + fraction (e.g. "2/5 tasks done") based on completed vs total tasks
@@ -23,7 +23,7 @@ One page, no routing. Sections, top to bottom:
 4. **Event detail panel** (per expanded event):
    - **Task list**: add-task form (task name text input, owner text input, deadline date input), checkbox per task to mark complete/incomplete, delete button per task. Progress bar updates immediately on add/complete/delete.
    - **Budget log form**: amount (number input, non-negative) + source (dropdown: SGA / OBI). Submitting adds to that event's spend and the semester totals. No per-task line items in V1 — one running total per source per event.
-5. **Reset button** — clears all events/tasks/budgets from localStorage and returns the page to the empty state without a page reload.
+5. **Reset button** — clicking it swaps to an inline "Delete all events, tasks, and budget data?" prompt with Yes/Cancel buttons (no native `confirm()` dialog); confirming clears all events/tasks/budgets from localStorage and returns the page to the empty state without a page reload.
 
 Interaction types covered: button (toggle/delete/reset), form (add event, add task, log budget), dropdown (status, budget source), checkbox (task complete).
 

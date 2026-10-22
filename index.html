@@ -9,23 +9,20 @@
 <body>
   <header class="app-header">
     <h1>Club Event Task &amp; Budget Delegator</h1>
-    <button id="reset-btn" class="btn btn-danger" type="button">Reset All Data</button>
+    <div class="reset-control">
+      <button id="reset-btn" class="btn btn-danger" type="button">Reset All Data</button>
+      <div id="reset-confirm" class="reset-confirm" hidden>
+        <span>Delete all events, tasks, and budget data?</span>
+        <button id="reset-confirm-btn" class="btn btn-danger" type="button">Yes, reset</button>
+        <button id="reset-cancel-btn" class="btn btn-secondary" type="button">Cancel</button>
+      </div>
+    </div>
   </header>
 
   <main>
-    <section id="totals-bar" class="totals-bar" aria-label="Semester totals">
-      <div class="totals-item">
-        <span class="totals-label">SGA Spent</span>
-        <span id="totals-sga" class="totals-value">$0</span>
-      </div>
-      <div class="totals-item">
-        <span class="totals-label">OBI Spent</span>
-        <span id="totals-obi" class="totals-value">$0</span>
-      </div>
-      <div class="totals-item totals-combined">
-        <span class="totals-label">Combined Total</span>
-        <span id="totals-combined" class="totals-value">$0</span>
-      </div>
+    <section id="completed-summary" class="completed-summary" aria-label="Completed events">
+      <span class="completed-summary-label">Events Completed</span>
+      <span id="completed-summary-value" class="completed-summary-value">0 / 0</span>
     </section>
 
     <section class="add-event-section">
@@ -40,6 +37,7 @@
           <select id="event-status" name="event-status">
             <option value="Planning">Planning</option>
             <option value="Active">Active</option>
+            <option value="Incomplete">Incomplete</option>
             <option value="Done">Done</option>
           </select>
         </div>
@@ -53,6 +51,21 @@
       <div id="event-list" class="event-list"></div>
       <p id="empty-state" class="empty-state" hidden>No events yet — add one above.</p>
     </section>
+
+    <section id="totals-bar" class="totals-bar" aria-label="Semester totals">
+      <div class="totals-item">
+        <span class="totals-label">SGA Spent</span>
+        <span id="totals-sga" class="totals-value">$0</span>
+      </div>
+      <div class="totals-item">
+        <span class="totals-label">OBI Spent</span>
+        <span id="totals-obi" class="totals-value">$0</span>
+      </div>
+      <div class="totals-item totals-combined">
+        <span class="totals-label">Combined Total</span>
+        <span id="totals-combined" class="totals-value">$0</span>
+      </div>
+    </section>
   </main>
 
   <template id="event-card-template">
@@ -60,7 +73,12 @@
       <div class="event-card-header">
         <div class="event-card-title">
           <h3 class="event-name"></h3>
-          <span class="event-status-badge"></span>
+          <select class="event-status-select">
+            <option value="Planning">Planning</option>
+            <option value="Active">Active</option>
+            <option value="Incomplete">Incomplete</option>
+            <option value="Done">Done</option>
+          </select>
         </div>
         <button type="button" class="btn btn-secondary toggle-btn">Expand</button>
       </div>
@@ -70,6 +88,7 @@
           <div class="progress-bar-fill"></div>
         </div>
         <span class="progress-fraction"></span>
+        <span class="tasks-done-badge" hidden>All tasks done</span>
       </div>
 
       <div class="spend-row">
@@ -103,10 +122,24 @@
 
         <div class="budget-section">
           <h4>Log Budget</h4>
+          <ul class="budget-list"></ul>
           <form class="add-budget-form inline-form" novalidate>
             <div class="field">
               <label>Amount ($)</label>
               <input type="number" class="budget-amount-input" min="0" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="field">
+              <label>Category</label>
+              <select class="budget-category-input">
+                <option value="Food">Food</option>
+                <option value="Crafts">Crafts</option>
+                <option value="Supplies">Supplies</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="field budget-other-field" hidden>
+              <label>Specify</label>
+              <input type="text" class="budget-other-input" placeholder="e.g. Decorations" />
             </div>
             <div class="field">
               <label>Source</label>
@@ -118,6 +151,28 @@
             <button type="submit" class="btn btn-primary">Log Budget</button>
           </form>
           <p class="budget-error error-message" role="alert" hidden></p>
+        </div>
+
+        <div class="details-section">
+          <h4>Additional Details</h4>
+          <div class="field">
+            <label>Notes</label>
+            <textarea class="details-notes-input" rows="3" placeholder="Notes, descriptions, logistics..."></textarea>
+          </div>
+
+          <ul class="details-link-list"></ul>
+          <form class="add-link-form inline-form" novalidate>
+            <div class="field">
+              <label>Label</label>
+              <input type="text" class="details-link-label-input" placeholder="e.g. Instagram post" required />
+            </div>
+            <div class="field">
+              <label>Link</label>
+              <input type="url" class="details-link-url-input" placeholder="https://..." required />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Link</button>
+          </form>
+          <p class="details-link-error error-message" role="alert" hidden></p>
         </div>
       </div>
     </article>
@@ -131,6 +186,26 @@
         <span class="task-meta"></span>
       </div>
       <button type="button" class="btn btn-icon delete-task-btn" aria-label="Delete task">&times;</button>
+    </li>
+  </template>
+
+  <template id="budget-row-template">
+    <li class="budget-row" data-budget-id="">
+      <div class="budget-info">
+        <span class="budget-amount"></span>
+        <span class="budget-meta"></span>
+      </div>
+      <button type="button" class="btn btn-icon delete-budget-btn" aria-label="Delete budget entry">&times;</button>
+    </li>
+  </template>
+
+  <template id="link-row-template">
+    <li class="link-row" data-link-id="">
+      <div class="link-info">
+        <a class="link-anchor" target="_blank" rel="noopener noreferrer"></a>
+        <span class="link-label"></span>
+      </div>
+      <button type="button" class="btn btn-icon delete-link-btn" aria-label="Delete link">&times;</button>
     </li>
   </template>
 

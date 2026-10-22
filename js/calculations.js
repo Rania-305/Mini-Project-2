@@ -8,9 +8,20 @@ const Calculations = (() => {
   }
 
   function eventSpend(event) {
-    const sga = event.budget.SGA || 0;
-    const obi = event.budget.OBI || 0;
-    return { sga, obi, total: sga + obi };
+    const totals = event.budgetEntries.reduce(
+      (acc, entry) => {
+        acc[entry.source] += entry.amount;
+        return acc;
+      },
+      { SGA: 0, OBI: 0 }
+    );
+    return { sga: totals.SGA, obi: totals.OBI, total: totals.SGA + totals.OBI };
+  }
+
+  function eventCompletionSummary(events) {
+    const total = events.length;
+    const completed = events.filter((e) => e.status === "Done").length;
+    return { completed, total };
   }
 
   function semesterTotals(events) {
@@ -36,5 +47,5 @@ const Calculations = (() => {
     });
   }
 
-  return { taskProgress, eventSpend, semesterTotals, formatCurrency };
+  return { taskProgress, eventSpend, eventCompletionSummary, semesterTotals, formatCurrency };
 })();
