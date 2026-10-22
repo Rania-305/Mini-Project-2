@@ -1,5 +1,8 @@
 # Mini-Project-2
 
+Tool description & how to use:
+- This is a tool for clubs/organizations to better plan their events, organize budgets, and delegate tasks among E-Board members. Initially created for the Babson MSA, this tool's capabilities can be applied to any org with project management needs. To use this tool, simply enter your event name and select the stage of the planning process that you are in. From there, the event will populate below and you can begin to enter tasks, the task owners, and deadlines for task completion as well as budget items you're spending on. There's also a section to add any links to docs/files that are important for the event, as well as to write a brief description of what the event is meant to accomplish. Have fun using this tool for all your planning and organizational needs!!
+
 Project Link: https://rania-305.github.io/Mini-Project-2/index.html
 
 What the agent built that differs from what I expected:
